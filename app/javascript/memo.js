@@ -1,3 +1,17 @@
+const buildHTML = (XHR) => {
+  const item = XHR.response.post;
+  const html = `
+    <div class="post">
+      <div class="post-date">
+        投稿日時：${item.created_at}
+      </div>
+      <div class="post-content">
+        ${item.content}
+      </div>
+    </div>`;
+  return html;
+};
+
 function post (){
   const form = document.getElementById("form");
   form.addEventListener("submit", (e) => {
@@ -9,8 +23,18 @@ function post (){
 
     const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
     XHR.setRequestHeader("X-CSRF-Token", token);
-    
+
     XHR.send(formData);
+    XHR.onload = () => {
+      if (XHR.status != 200) {
+        alert(`Error ${XHR.status}: ${XHR.statusText}`);
+        return null;
+      };
+      const list = document.getElementById("list")
+      const formText = document.getElementById("content");
+      list.insertAdjacentHTML("afterend", buildHTML(XHR))
+      formText.value = ""
+    };
   });
 };
 
