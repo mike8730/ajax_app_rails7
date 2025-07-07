@@ -5,6 +5,8 @@ set -o errexit
 bundle install
 bundle exec rake assets:precompile
 bundle exec rake assets:clean
-bundle exec rake db:migrate
-# bundle exec rake db:migrate
-DISABLE_DATABASE_ENVIRONMENT_CHECK=1 bundle exec rake db:migrate:reset
+
+# 最終手段：DBを完全にリセットする
+DISABLE_DATABASE_ENVIRONMENT_CHECK=1 bundle exec rake db:drop
+bundle exec rake db:create
+bundle exec rake db:schema:load
